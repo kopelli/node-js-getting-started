@@ -3,10 +3,32 @@ module.exports = function(grunt) {
         exec: {
             deploy: {
                 cmd: 'git push heroku master'
+            },
+            'switch-to-branch': {
+                cmd: function(branch) {
+                    return 'git checkout ' + branch;
+                }
+            },
+            'merge-master-to-current-branch': {
+                cmd: 'git merge master --no-ff'
+            },
+            'tag-branch': {
+                cmd: function() {
+                    return 'git tag -m "Deployed at ' + new Date() + '"';
+                }
             }
         }
     });
-    grunt.registerTask('deploy', 'Push this thing out to Heroku', ['exec:deploy']);
+
+    grunt.loadNpmTasks('grunt-exec');
+
+    grunt.registerTask('deploy',
+        'Push this thing out to Heroku',
+        ['exec:switch-to-branch:deploy',
+         'exec:merge-master-to-current-branch',
+         'exec:deploy',
+         'exec:tag-branch',
+         'exec:switch-to-branch:master']);
 
     grunt.registerTask('default', 'Run this when you don\'t know what else to do...', function() {
         grunt.log.write('Good job...you ran the default task!');
