@@ -14,7 +14,7 @@ module.exports = function(grunt) {
             },
             'tag-branch': {
                 cmd: function() {
-                    return 'git tag ' + new Date().toISOString().replace(":", "-");
+                    return 'git tag ' + new Date().toISOString().replace(/:/, "-");
                 }
             }
         }
